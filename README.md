@@ -1,3 +1,5 @@
+**Addressing certain errors**
+
 1. Line 13: Invalid Picker Import
 Error: import { Picker } from '@expo/ui/community/picker';
 
@@ -47,8 +49,13 @@ Fix: Every picker item is incorrectly setting its value to the global genre vari
 
 
 
-
 8. Line 253: Faulty Key Extractor for FlatList
 Error: keyExtractor={(item) => item.title}
 
 Fix: If a user adds two albums with the same title, React Native will crash due to duplicate keys. You should use the unique id instead
+
+
+**Evidence**
+
+
+<img width="1080" height="2400" alt="Screenshot_20261009_173851" src="https://github.com/user-attachments/assets/d502131a-4678-4d9d-8e6b-cd52b105b99e" />
