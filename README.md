@@ -1,56 +1,54 @@
-# Welcome to your Expo app 👋
+1. Line 13: Invalid Picker Import
+Error: import { Picker } from '@expo/ui/community/picker';
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Fix: Expo and React Native community recently moved or structure pickers differently, or if you are using @react-native-picker/picker, make sure the import matches your project dependencies. Standard Expo projects use @react-native-picker/picker.
 
-## Get started
 
-1. Install dependencies
 
-   ```bash
-   npm install
-   ```
+2. Lines 63–66: Flawed Title Length Validation Logic
+Error: title.trim().length < MIN_TEXT_LENGTH && title.trim().length > MAX_TITLE_LENGTH
 
-2. Start the app
+Fix: Using && (AND) means this condition will never be true simultaneously (a string cannot be both shorter than 2 and greater than 50 at the same time). It needs to be an || (OR) operator
 
-   ```bash
-   npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+3. Lines 154 & 156: Type Mismatch in Temporary Album Object
+Error: year: Number(year) and rating: Number(rating)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Fix: Your Album type definition (lines 15–21) defines year and rating as string, but you are assigning numbers to them. You should either update your Album interface to type them as number, or store them as strings (e.g., year: year.trim()).
 
-## Get a fresh project
 
-When you're ready, run:
 
-```bash
-npm run reset-project
-```
+4. Line 159: State Mutation Bug (Replacing Instead of Appending)
+Error: setAlbums([temporaryAlbum]);
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Fix: This replaces the entire array with just the single new album, violating the requirement that adding new albums should keep previous ones. You need to spread the current albums into the new array
 
-### Other setup steps
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
 
-## Learn more
+5. Lines 169–171: Incorrect Deletion Logic in handleDelete
+Error: currentAlbums.filter((album) => album.id === id)
 
-To learn more about developing your project with Expo, look at the following resources:
+Fix: The .filter() method keeps items that evaluate to true. This condition keeps only the item matching the deleted ID and removes everything else. To delete it, you must filter out the matching ID
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Join the community
 
-Join our community of developers creating universal apps.
+6. Line 224: Incorrect Selected Value Binding on Picker
+Error: selectedValue={title}
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Fix: The Picker needs to reflect the genre state, not the title state
+
+
+
+7. Line 230: Incorrect Value Prop on Picker Items
+Error: <Picker.Item key="{item}" label="{item}" value="{genre}"/>
+
+Fix: Every picker item is incorrectly setting its value to the global genre variable instead of the iteration variable item
+
+
+
+
+8. Line 253: Faulty Key Extractor for FlatList
+Error: keyExtractor={(item) => item.title}
+
+Fix: If a user adds two albums with the same title, React Native will crash due to duplicate keys. You should use the unique id instead
